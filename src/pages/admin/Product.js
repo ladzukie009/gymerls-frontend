@@ -67,7 +67,7 @@ function Product() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetch("https://gymerls.cyclic.app/api/get-product", {
+      fetch("http://localhost:3031/api/get-product", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -131,7 +131,7 @@ function Product() {
     const data = new FormData(e.currentTarget);
     const addedDate = formatDate(new Date());
 
-    fetch("https://gymerls.cyclic.app/api/create-product", {
+    fetch("http://localhost:3031/api/create-product", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -174,7 +174,7 @@ function Product() {
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch("https://gymerls.cyclic.app/api/update-product", {
+        fetch("http://localhost:3031/api/update-product", {
           method: "PATCH",
           headers: {
             "Content-type": "application/json",
@@ -226,7 +226,7 @@ function Product() {
     setIsBtnLoading(false);
     setProdId(id);
 
-    fetch("https://gymerls.cyclic.app/api/get-product-by-id", {
+    fetch("http://localhost:3031/api/get-product-by-id", {
       method: "POST",
       headers: {
         "Content-type": "application/json",

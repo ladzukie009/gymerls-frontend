@@ -35,6 +35,7 @@ import dayjs from "dayjs";
 import Swal from "sweetalert2";
 
 function User() {
+  const relativeTime = require("dayjs/plugin/relativeTime");
   const [open, setOpen] = useState(false);
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModalMealPlanning, setOpenModalMealPlanning] = useState(false);
@@ -125,6 +126,10 @@ function User() {
       name: "student",
       value: "Student",
     },
+    {
+      name: "all",
+      value: "All access",
+    },
   ];
 
   // data table
@@ -181,10 +186,13 @@ function User() {
   };
 
   const populateRoleInput = () => {
-    fetch("https://gymerls.cyclic.app/api/roles")
+    fetch("http://localhost:3031/api/roles")
       .then((response) => response.json())
       .then((data) => {
-        setRoles(data);
+        const newData = data.filter((object) => {
+          return object.id !== 1;
+        });
+        setRoles(newData);
       });
   };
 
@@ -202,7 +210,7 @@ function User() {
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch("https://gymerls.cyclic.app/api/register", {
+        fetch("http://localhost:3031/api/register", {
           method: "POST",
           headers: {
             "Content-type": "application/json",
@@ -249,7 +257,7 @@ function User() {
     setcreateButtonIsDisabled(true);
     setIsVisible(true);
     if (username.length >= 5) {
-      fetch("https://gymerls.cyclic.app/api/validate-user", {
+      fetch("http://localhost:3031/api/validate-user", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -278,7 +286,7 @@ function User() {
     const formattedStartDate = formatDate(startDate);
     const formattedEndDate = formatDate(endDate);
 
-    fetch("https://gymerls.cyclic.app/api/create-user-profile", {
+    fetch("http://localhost:3031/api/create-user-profile", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -310,7 +318,7 @@ function User() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetch("https://gymerls.cyclic.app/api/users")
+      fetch("http://localhost:3031/api/users")
         .then((response) => response.json())
         .then((data) => {
           setUsers(data);
@@ -332,7 +340,7 @@ function User() {
 
   const handleClickOpenModalUpdate = (user_name) => {
     setOpenModalUpdate(true);
-    fetch("https://gymerls.cyclic.app/api/get-user-by-username", {
+    fetch("http://localhost:3031/api/get-user-by-username", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -388,7 +396,7 @@ function User() {
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch("https://gymerls.cyclic.app/api/update-user", {
+        fetch("http://localhost:3031/api/update-user", {
           method: "PATCH",
           headers: {
             "Content-type": "application/json",
@@ -436,7 +444,7 @@ function User() {
     setMealPlanUser(username);
     setOpenModalMealPlanning(true);
 
-    fetch("https://gymerls.cyclic.app/api/meal-plan", {
+    fetch("http://localhost:3031/api/meal-plan", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -513,7 +521,7 @@ function User() {
     setIsBtnLoading(true);
     const data = new FormData(event.currentTarget);
 
-    fetch("https://gymerls.cyclic.app/api/create-meal-planning", {
+    fetch("http://localhost:3031/api/create-meal-planning", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -571,7 +579,7 @@ function User() {
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch("https://gymerls.cyclic.app/api/update-meal-planning", {
+        fetch("http://localhost:3031/api/update-meal-planning", {
           method: "PATCH",
           headers: {
             "Content-type": "application/json",
@@ -642,7 +650,7 @@ function User() {
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch("https://gymerls.cyclic.app/api/update-password", {
+        fetch("http://localhost:3031/api/update-password", {
           method: "PATCH",
           headers: {
             "Content-type": "application/json",
@@ -772,6 +780,14 @@ function User() {
                   value={birthdate}
                   onChange={(newValue) => {
                     setBirthdate(newValue);
+                    const formatBdate = formatDate(newValue);
+                    dayjs.extend(relativeTime);
+
+                    var newDate = dayjs(formatBdate).fromNow(true);
+
+                    let firstWord = newDate.split(" ")[0];
+                    var age = parseFloat(firstWord);
+                    setAge(age);
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
@@ -783,10 +799,12 @@ function User() {
                     label="Age"
                     margin="normal"
                     type="number"
+                    value={age}
                     onChange={(e) => {
                       setAge(e.target.value);
                     }}
                     required
+                    disabled
                     fullWidth
                   />
                 </Grid>
@@ -1044,6 +1062,14 @@ function User() {
                         value={dayjs(updateBirthdate)}
                         onChange={(newValue) => {
                           setUpdateBirthdate(newValue);
+                          const formatBdate = formatDate(newValue);
+                          dayjs.extend(relativeTime);
+
+                          var newDate = dayjs(formatBdate).fromNow(true);
+
+                          let firstWord = newDate.split(" ")[0];
+                          var age = parseFloat(firstWord);
+                          setAge(age);
                         }}
                         renderInput={(params) => <TextField {...params} />}
                       />
@@ -1054,6 +1080,7 @@ function User() {
                       id="age"
                       label="Age"
                       margin="normal"
+                      disabled
                       type="number"
                       value={age}
                       onChange={(e) => {

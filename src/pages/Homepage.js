@@ -75,7 +75,24 @@ function DrawerAppBar(props) {
         </ListItem>
 
         <ListItem disablePadding>
-          <ListItemButton sx={{ textAlign: "center" }}>
+          <ListItemButton
+            sx={{ textAlign: "center" }}
+            onClick={(e) => {
+              e.preventDefault();
+
+              const currentUser = localStorage.getItem("username");
+              const currentUserRole = localStorage.getItem("role");
+              if (currentUser !== null && currentUserRole === "super_admin") {
+                navigate("/dashboard");
+              } else if (currentUser !== null && currentUserRole === "admin") {
+                navigate("/admin/dashboard");
+              } else if (currentUser !== null && currentUserRole === "user") {
+                navigate("/user/dashboard");
+              } else {
+                navigate("/login");
+              }
+            }}
+          >
             <ListItemText primary={"Login"} />
           </ListItemButton>
         </ListItem>
