@@ -132,6 +132,23 @@ function User() {
     },
   ];
 
+  const dietType = [
+    {
+      name: "bulking",
+      value: "Bulking",
+    },
+    {
+      name: "cutting",
+      value: "Cutting",
+    },
+    {
+      name: "Body recomposition",
+      value: "Body recomposition",
+    },
+  ];
+  const [typeDiet, setTypeDiet] = useState("");
+  const [totalCalories, setTotalCalories] = useState("");
+
   // data table
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -458,6 +475,9 @@ function User() {
         if (data.length !== 0) {
           setHasMealPlan(true);
 
+          setTypeDiet(data[0].diet_type);
+          setTotalCalories(data[0].calories);
+
           setSundayBreakfast(data[0].sun_bf_meal);
           setSundayLunch(data[0].sun_lunch_meal);
           setSundayDinner(data[0].sun_dinner_meal);
@@ -492,6 +512,8 @@ function User() {
   };
 
   const handleCloseModalMealPlanning = () => {
+    setTypeDiet("");
+    setTotalCalories("");
     setSundayBreakfast("");
     setSundayLunch("");
     setSundayDinner("");
@@ -528,6 +550,8 @@ function User() {
       },
       body: JSON.stringify({
         username: mealPlanUser,
+        diet_type: data.get("diet_type"),
+        calories: data.get("total_calories"),
         sun_bf_meal: data.get("sunday_breakfast"),
         sun_lunch_meal: data.get("sunday_lunch"),
         sun_dinner_meal: data.get("sunday_dinner"),
@@ -585,6 +609,8 @@ function User() {
             "Content-type": "application/json",
           },
           body: JSON.stringify({
+            diet_type: data.get("diet_type"),
+            calories: data.get("total_calories"),
             sun_bf_meal: data.get("sunday_breakfast"),
             sun_lunch_meal: data.get("sunday_lunch"),
             sun_dinner_meal: data.get("sunday_dinner"),
@@ -1341,6 +1367,40 @@ function User() {
                     applicable.
                   </DialogContentText>
                   <Divider />
+                  <TextField
+                    id="standard-select-diet"
+                    select
+                    fullWidth
+                    margin="normal"
+                    label="Diet type"
+                    name="diet_type"
+                    defaultValue={"Body recomposition"}
+                    value={typeDiet || ""}
+                    sx={{ marginBottom: "1rem" }}
+                    onChange={(e) => {
+                      setTypeDiet(e.target.value);
+                    }}
+                    helperText="Please select diet type"
+                  >
+                    {dietType.map((option) => (
+                      <MenuItem key={option.name} value={option.value}>
+                        {option.value}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+
+                  <TextField
+                    name="total_calories"
+                    label="Total calories"
+                    margin="normal"
+                    fullWidth
+                    value={totalCalories}
+                    onChange={(e) => {
+                      setTotalCalories(e.target.value);
+                    }}
+                  />
+
+                  <Divider />
                   <Typography variant="h6">SUNDAY</Typography>
 
                   <div>
@@ -1697,6 +1757,38 @@ function User() {
                     Fill up all fields, type <strong>n/a</strong> if not
                     applicable.
                   </DialogContentText>
+                  <Divider />
+                  <TextField
+                    id="standard-select-diet"
+                    select
+                    fullWidth
+                    name="diet_type"
+                    margin="normal"
+                    value={typeDiet}
+                    label="Diet type"
+                    sx={{ marginBottom: "1rem" }}
+                    onChange={(e) => {
+                      setTypeDiet(e.target.value);
+                    }}
+                    defaultValue={"Bulking" || ""}
+                    helperText="Please select diet type"
+                  >
+                    {dietType.map((option) => (
+                      <MenuItem key={option.name} value={option.value}>
+                        {option.value}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+
+                  <TextField
+                    name="total_calories"
+                    label="Total calories"
+                    margin="normal"
+                    fullWidth
+                    onChange={(e) => {
+                      setTotalCalories(e.target.value);
+                    }}
+                  />
                   <Divider />
                   <Typography variant="h6">SUNDAY</Typography>
                   <div>
