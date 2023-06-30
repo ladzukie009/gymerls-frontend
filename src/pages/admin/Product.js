@@ -73,7 +73,7 @@ function Product() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetch("http://localhost:3031/api/get-product", {
+      fetch("https://gymerls-api.vercel.app/api/get-product", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -155,7 +155,7 @@ function Product() {
     const data = new FormData(e.currentTarget);
     const addedDate = formatDate(new Date());
     uploadImageToCloud(function (callback) {
-      fetch("http://localhost:3031/api/create-product", {
+      fetch("https://gymerls-api.vercel.app/api/create-product", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -201,7 +201,7 @@ function Product() {
         allowOutsideClick: false,
       }).then((result) => {
         if (result.isConfirmed) {
-          fetch("http://localhost:3031/api/update-product", {
+          fetch("https://gymerls-api.vercel.app/api/update-product", {
             method: "PATCH",
             headers: {
               "Content-type": "application/json",
@@ -255,7 +255,7 @@ function Product() {
     setIsBtnLoading(false);
     setProdId(id);
 
-    fetch("http://localhost:3031/api/get-product-by-id", {
+    fetch("https://gymerls-api.vercel.app/api/get-product-by-id", {
       method: "POST",
       headers: {
         "Content-type": "application/json",

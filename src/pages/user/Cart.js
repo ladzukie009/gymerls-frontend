@@ -1,24 +1,49 @@
-import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Stack,
+  Typography,
+  Dialog,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Paper,
+  TextField,
+  Radio,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+
 import Image from "mui-image";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 function Cart() {
   const [cart, setCart] = useState([]);
   const [cartItemCount, setCartItemCount] = useState(0);
-  const [totalAmount, setTotalAmount] = useState(0);
+
+  const [paymentMethod, setPaymentMethod] = useState("Delivery");
+  const [address, setAddress] = useState("");
+  const [isAddressDisable, setIsAddressDisable] = useState(true);
+  const [fullname, setFullname] = useState("");
+  const [contact, setContact] = useState("");
+  // const [totalAmount, setTotalAmount] = useState(0);
+
+  const [newCart, setNewCart] = useState([]);
+
+  const [item, setItem] = useState("");
 
   const [grandTotal, setGrandTotal] = useState(0);
 
+  // DIALOG BOX - CHECKOUT
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   useEffect(() => {
-    // const totalUsingReduce = findSumUsingReduce();
-
-    // console.log("totalUsingReduce", totalUsingReduce);
-    // console.log("totalUsingMap", totalUsingMap);
-
-    // var myCart = JSON.parse(localStorage.getItem("cart"));
-    // setCart(myCart);
-    // objectLength(myCart);
-    fetch("http://localhost:3031/api/get-cart-by-id", {
+    fetch("https://gymerls-api.vercel.app/api/get-cart-by-id", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -38,11 +63,11 @@ function Cart() {
         result.map(({ sub_total }) => (t = t + sub_total));
         setGrandTotal(t);
       });
-  }, []);
+  }, [cart]);
 
   function findSumUsingReduce(result) {
     const s = result.reduce((s, { price }) => s + price, 0);
-    setTotalAmount(s);
+    // setTotalAmount(s);
     return s;
   }
 
@@ -99,8 +124,100 @@ function Cart() {
   };
 
   const placeOrder = () => {
-    console.log(cart);
-    console.log(grandTotal);
+    setOpen(true);
+  };
+
+  const handleChangeMethod = (event) => {
+    setPaymentMethod(event.target.value);
+    if (event.target.value === "Pickup") {
+      setAddress(
+        "3rd Floor , Dona Pacita Building beside PureGold Paniqui, M. H Del Pilar Street, Paniqui, Tarlac, Paniqui, Philippines"
+      );
+      setIsAddressDisable(true);
+    } else {
+      setAddress("");
+      setIsAddressDisable(false);
+    }
+  };
+
+  const deleteCartItem = (id) => {
+    fetch("https://gymerls-api.vercel.app/api/delete-cart", {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {});
+  };
+
+  const formatDate = (date) => {
+    var dateToFormat = new Date(date);
+    var year = dateToFormat.toLocaleString("default", { year: "numeric" });
+    var month = dateToFormat.toLocaleString("default", { month: "2-digit" });
+    var day = dateToFormat.toLocaleString("default", { day: "2-digit" });
+
+    var formattedDate = year + "-" + month + "-" + day;
+    return formattedDate;
+  };
+
+  const confirmCheckOut = () => {
+    Swal.fire({
+      title: "Proceed to checkout?",
+      text: "You can proceed and place your order.",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      allowOutsideClick: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        for (let post of cart) {
+          deleteCartItem(post.id);
+        }
+
+        for (let item of cart) {
+          newCart.push(item.product_name);
+        }
+
+        var newItem = JSON.stringify(newCart).replace(/\[|\]/g, "");
+        var replaceItem = newItem.replace(/"/g, "");
+        setItem(replaceItem);
+
+        const transactionDate = formatDate(new Date());
+
+        fetch("https://gymerls-api.vercel.app/api/transaction", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            username: localStorage.getItem("username"),
+            fullname: fullname,
+            contact: contact,
+            method: paymentMethod,
+            address: address,
+            items: replaceItem,
+            total: grandTotal,
+            status: "pending",
+            transaction_date: transactionDate,
+          }),
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            Swal.fire({
+              title: "Product successfully created!",
+              icon: "success",
+              showConfirmButton: false,
+              timer: 1500,
+            }).then(function () {
+              setOpen(false);
+            });
+          });
+      }
+    });
   };
 
   return (
@@ -139,6 +256,143 @@ function Cart() {
         </Box>
       ) : (
         <Box>
+          <div>
+            <Dialog fullScreen open={open} onClose={handleClose}>
+              <AppBar sx={{ position: "relative" }}>
+                <Toolbar>
+                  <IconButton
+                    edge="start"
+                    color="inherit"
+                    onClick={handleClose}
+                    aria-label="close"
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                  <Typography
+                    sx={{ ml: 2, flex: 1 }}
+                    variant="h6"
+                    component="div"
+                  >
+                    CHECKOUT
+                  </Typography>
+                  <Button
+                    autoFocus
+                    color="inherit"
+                    onClick={() => confirmCheckOut()}
+                  >
+                    Confirm
+                  </Button>
+                </Toolbar>
+              </AppBar>
+              <Stack>
+                <Grid container padding={3}>
+                  <Grid item xs={7}>
+                    <Stack>
+                      <Typography variant="h5" marginBottom={2}>
+                        Billing Details
+                      </Typography>
+                      <Box component="form" margin={2}>
+                        <TextField
+                          id="outlined-basic"
+                          value={fullname}
+                          label="Fullname"
+                          variant="outlined"
+                          margin="normal"
+                          onChange={(e) => setFullname(e.target.value)}
+                          fullWidth
+                        />
+                        <TextField
+                          id="outlined-basic"
+                          value={contact}
+                          label="Contact no."
+                          variant="outlined"
+                          margin="normal"
+                          onChange={(e) => setContact(e.target.value)}
+                          fullWidth
+                        />
+                        <Radio
+                          checked={paymentMethod === "Deliver"}
+                          onChange={handleChangeMethod}
+                          value="Deliver"
+                          name="radio-buttons"
+                        />{" "}
+                        Deliver
+                        <Radio
+                          checked={paymentMethod === "Pickup"}
+                          onChange={handleChangeMethod}
+                          value="Pickup"
+                          name="radio-buttons"
+                        />
+                        Pickup
+                        <TextField
+                          id="outlined-basic"
+                          name="address"
+                          label="Address"
+                          disabled={isAddressDisable}
+                          variant="outlined"
+                          onChange={(e) => {
+                            setAddress(e.target.value);
+                          }}
+                          value={address}
+                          margin="normal"
+                          multiline
+                          rows={2}
+                          fullWidth
+                        />
+                      </Box>
+                    </Stack>
+                  </Grid>
+                  <Grid item xs={5}>
+                    <Paper elevation={3} sx={{ borderRadius: 0, padding: 2 }}>
+                      <Typography variant="h6">CART SUMMARY</Typography>
+                      <Stack padding={3}>
+                        {cart.map((item) => {
+                          return (
+                            <Grid
+                              container
+                              key={item.id}
+                              sx={{
+                                borderBottom: "2px solid gray",
+                                marginBottom: 2,
+                              }}
+                            >
+                              <Grid item xs={9}>
+                                <Typography>
+                                  {item.quantity} x <b>{item.product_name}</b>
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={3}>
+                                <Typography sx={{ fontWeight: "bold" }}>
+                                  Php {item.sub_total}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12}>
+                                <Typography sx={{ opacity: 0.5 }}>
+                                  {item.description}
+                                </Typography>
+                              </Grid>
+                            </Grid>
+                          );
+                        })}
+                        <Grid container>
+                          <Grid item xs={9}>
+                            <Typography sx={{ fontWeight: "bold" }}>
+                              Total:
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={3}>
+                            <Typography sx={{ fontWeight: "bold" }}>
+                              Php {grandTotal}
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Stack>
+                    </Paper>
+                  </Grid>
+                </Grid>
+              </Stack>
+            </Dialog>
+          </div>
           <Typography variant="h4">My Cart</Typography>
           <Stack>
             <Grid container>

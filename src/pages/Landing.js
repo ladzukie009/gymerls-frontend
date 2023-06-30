@@ -26,13 +26,13 @@ function Landing() {
     getTime();
     getCurrentUser(localStorage.getItem("username"));
 
-    fetch("http://localhost:3031/api/all-user")
+    fetch("https://gymerls-api.vercel.app/api/all-user")
       .then((response) => response.json())
       .then((data) => {
         setUserCount(data.length);
       });
 
-    fetch("http://localhost:3031/api/products")
+    fetch("https://gymerls-api.vercel.app/api/products")
       .then((response) => response.json())
       .then((data) => {
         setProductCount(data.length);

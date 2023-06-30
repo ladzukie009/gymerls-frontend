@@ -55,7 +55,7 @@ export default function SignInSide() {
     setIsLoading(true);
     const data = new FormData(event.currentTarget);
 
-    fetch("http://localhost:3031/api/get-user", {
+    fetch("https://gymerls-api.vercel.app/api/get-user", {
       method: "POST",
       headers: {
         "Content-type": "application/json",

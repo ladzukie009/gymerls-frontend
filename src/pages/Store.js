@@ -92,35 +92,52 @@ function DrawerAppBar(props) {
 
   const [items, setItems] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:3031/api/products")
-      .then((response) => response.json())
-      .then((data) => {
-        setItems(data);
-      });
+    const username = localStorage.getItem("username");
 
-    fetch("http://localhost:3031/api/get-cart-by-id", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        username: localStorage.getItem("username"),
-        status: "cart",
-      }),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        setCartItems(result);
-        objectLength(result);
+    if (username === null) {
+      Swal.fire({
+        icon: "warning",
+        title: "No user detected!",
+        text: "Please login using your credential to proceed",
+        showCancelButton: false,
+        confirmButtonText: "Ok",
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
       });
-  }, [cartItemQuantity]);
+    } else {
+      fetch("https://gymerls-api.vercel.app/api/products")
+        .then((response) => response.json())
+        .then((data) => {
+          setItems(data);
+        });
+
+      fetch("https://gymerls-api.vercel.app/api/get-cart-by-id", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          username: localStorage.getItem("username"),
+          status: "cart",
+        }),
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          setCartItems(result);
+          objectLength(result);
+        });
+    }
+  }, [cartItemQuantity, navigate]);
 
   const addToCart = (product_name, image_url, description, price) => {
     const addedDate = formatDate(new Date());
     setCartItemQuantity(cartItemQuantity + 1);
     setOpenSnackBar(true);
 
-    fetch("http://localhost:3031/api/add-to-cart", {
+    fetch("https://gymerls-api.vercel.app/api/add-to-cart", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -150,7 +167,7 @@ function DrawerAppBar(props) {
   };
 
   const deleteCartItem = (id) => {
-    fetch("http://localhost:3031/api/delete-cart", {
+    fetch("https://gymerls-api.vercel.app/api/delete-cart", {
       method: "PATCH",
       headers: {
         "Content-type": "application/json",
@@ -262,7 +279,7 @@ function DrawerAppBar(props) {
                   key={item.id}
                   sx={{
                     display: "flex",
-                    width: "250px",
+                    width: "100%",
                     alignItems: "center",
                     borderBottom: "1px solid gray",
                     paddingBottom: 1,
@@ -389,7 +406,15 @@ function DrawerAppBar(props) {
                   >
                     {items.map((item) => {
                       return (
-                        <Grid key={item.id}>
+                        <Grid
+                          key={item.id}
+                          width={250}
+                          sx={{
+                            flexDirection: "column",
+                            justifyContent: "space-between",
+                            display: "flex",
+                          }}
+                        >
                           <Image
                             src={item.image_url}
                             alt="empty cart"

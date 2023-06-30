@@ -24,7 +24,7 @@ function Landing() {
     getTime();
     getCurrentUser(localStorage.getItem("username"));
 
-    fetch("http://localhost:3031/api/get-user-by-role", {
+    fetch("https://gymerls-api.vercel.app/api/get-user-by-role", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -38,7 +38,7 @@ function Landing() {
         setUserCount(data.length);
       });
 
-    fetch("http://localhost:3031/api/get-product", {
+    fetch("https://gymerls-api.vercel.app/api/get-product", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
