@@ -40,3 +40,18 @@
 .swal2-container {
   z-index: 1300 !important;
 }
+
+.empty-cart {
+  width: 100%;
+}
+
+.store-left {
+  overflow-y: scroll;
+  height: calc(100vh - 100px);
+}
+
+@media (min-width: 576px) { 
+  .empty-cart {
+    width: 30rem;
+  }
+}

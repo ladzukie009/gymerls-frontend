@@ -27,8 +27,8 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 import Swal from "sweetalert2";
-import Landing from "./Landing";
 import Profile from "./Profile";
+import Cart from "./Cart";
 
 const drawerWidth = 240;
 
@@ -171,6 +171,10 @@ export default function MiniDrawer() {
                 justifyContent: open ? "initial" : "center",
                 px: 2.5,
               }}
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = "/user/dashboard";
+              }}
             >
               <ListItemIcon
                 sx={{
@@ -184,7 +188,7 @@ export default function MiniDrawer() {
                 </Tooltip>
               </ListItemIcon>
               <ListItemText sx={{ opacity: open ? 1 : 0 }}>
-                <Typography sx={{ fontWeight: "bold" }}>Dashboard</Typography>
+                <Typography>Dashboard</Typography>
               </ListItemText>
             </ListItemButton>
           </ListItem>
@@ -226,7 +230,6 @@ export default function MiniDrawer() {
               }}
               onClick={(e) => {
                 e.preventDefault();
-                window.location.href = "/user/order";
               }}
             >
               <ListItemIcon
@@ -240,10 +243,9 @@ export default function MiniDrawer() {
                   <ShoppingCartIcon />
                 </Tooltip>
               </ListItemIcon>
-              <ListItemText
-                primary={"My Cart"}
-                sx={{ opacity: open ? 1 : 0 }}
-              />
+              <ListItemText sx={{ opacity: open ? 1 : 0 }}>
+                <Typography sx={{ fontWeight: "bold" }}>My Cart</Typography>
+              </ListItemText>
             </ListItemButton>
           </ListItem>
         </List>
@@ -305,7 +307,7 @@ export default function MiniDrawer() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <Landing />
+        <Cart />
       </Box>
     </Box>
   );

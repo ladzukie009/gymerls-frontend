@@ -22,6 +22,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme, styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 import Swal from "sweetalert2";
+import Axios from "axios";
 
 function Product() {
   const theme = useTheme();
@@ -29,6 +30,11 @@ function Product() {
   const [products, setProducts] = useState([]);
   const [addedDate, setAddedDate] = useState("");
   const [isBtnLoading, setIsBtnLoading] = useState(false);
+
+  const [price, setPrice] = useState(0);
+
+  // Uploading image url
+  const [uploadFile, setUploadFile] = useState("");
 
   //Dialog
   const modalWidth = useMediaQuery(theme.breakpoints.down("md"));
@@ -117,38 +123,58 @@ function Product() {
     });
   };
 
+  const uploadImageToCloud = (callback) => {
+    // IMAGE
+    const formData = new FormData();
+    formData.append("file", uploadFile);
+    formData.append("upload_preset", "React-cloudinary");
+
+    Axios.post(
+      "https://api.cloudinary.com/v1_1/dpruj7bhk/image/upload",
+      formData
+    )
+      .then((response) => {
+        callback(response.data.secure_url);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const createProduct = (e) => {
     e.preventDefault();
     setIsBtnLoading(true);
     const data = new FormData(e.currentTarget);
     const addedDate = formatDate(new Date());
-
-    fetch("http://localhost:3031/api/create-product", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        product_name: data.get("product_name"),
-        description: data.get("description"),
-        price: data.get("price"),
-        added_by: localStorage.getItem("username"),
-        added_date: addedDate,
-      }),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        Swal.fire({
-          title: "Product successfully created!",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1500,
-        }).then(function () {
-          setOpenModalProduct(false);
-          setIsBtnLoading(false);
-          setIsLoading(true);
+    uploadImageToCloud(function (callback) {
+      fetch("http://localhost:3031/api/create-product", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          product_name: data.get("product_name"),
+          image_url: callback,
+          description: data.get("description"),
+          price: price,
+          added_by: localStorage.getItem("username"),
+          added_date: addedDate,
+        }),
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          Swal.fire({
+            title: "Product successfully created!",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(function () {
+            setOpenModalProduct(false);
+            setIsBtnLoading(false);
+            setIsLoading(true);
+          });
         });
-      });
+    });
   };
 
   const updateProduct = (e) => {
@@ -156,45 +182,48 @@ function Product() {
     setIsBtnLoading(true);
     const data = new FormData(e.currentTarget);
 
-    Swal.fire({
-      icon: "info",
-      title: "Are you sure you want to update this product?",
-      text: "You won't be able to revert this!",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-      allowOutsideClick: false,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        fetch("http://localhost:3031/api/update-product", {
-          method: "PATCH",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            product_name: data.get("update_prod_name"),
-            description: data.get("update_description"),
-            price: data.get("update_price"),
-            id: prodId,
-          }),
-        })
-          .then((res) => res.json())
-          .then((result) => {
-            Swal.fire({
-              title: "Product successfully updated!",
-              icon: "success",
-              showConfirmButton: false,
-              timer: 1500,
-            }).then(function () {
-              setIsBtnLoading(false);
-              setOpenModalUpdateProduct(false);
+    uploadImageToCloud(function (callback) {
+      Swal.fire({
+        icon: "info",
+        title: "Are you sure you want to update this product?",
+        text: "You won't be able to revert this!",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch("http://localhost:3031/api/update-product", {
+            method: "PATCH",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+              product_name: data.get("update_prod_name"),
+              image_url: callback,
+              description: data.get("update_description"),
+              price: data.get("update_price"),
+              id: prodId,
+            }),
+          })
+            .then((res) => res.json())
+            .then((result) => {
+              Swal.fire({
+                title: "Product successfully updated!",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(function () {
+                setIsBtnLoading(false);
+                setOpenModalUpdateProduct(false);
+              });
             });
-          });
-      } else {
-        setIsBtnLoading(false);
-      }
+        } else {
+          setIsBtnLoading(false);
+        }
+      });
+      setIsBtnLoading(false);
     });
-    setIsBtnLoading(false);
   };
 
   const handleCloseUpdateProduct = (e) => {
@@ -274,6 +303,17 @@ function Product() {
                     required
                   />
                   <TextField
+                    name="image_url"
+                    margin="dense"
+                    fullWidth
+                    sx={{ marginBottom: "1rem" }}
+                    type="file"
+                    onChange={(event) => {
+                      setUploadFile(event.target.files[0]);
+                    }}
+                    required
+                  />
+                  <TextField
                     name="update_description"
                     label="Description"
                     margin="dense"
@@ -296,7 +336,11 @@ function Product() {
                     type="number"
                     sx={{ marginBottom: "1rem" }}
                     onChange={(e) => {
-                      setProdPrice(e.target.value);
+                      const amount = e.target.value;
+
+                      if (!amount || amount.match(/^\d{1,}(\.\d{0,4})?$/)) {
+                        setProdPrice(amount);
+                      }
                     }}
                     required
                   />
@@ -343,6 +387,17 @@ function Product() {
                     required
                   />
                   <TextField
+                    name="image_url"
+                    margin="dense"
+                    fullWidth
+                    sx={{ marginBottom: "1rem" }}
+                    type="file"
+                    onChange={(event) => {
+                      setUploadFile(event.target.files[0]);
+                    }}
+                    required
+                  />
+                  <TextField
                     name="description"
                     label="Description"
                     margin="dense"
@@ -356,9 +411,18 @@ function Product() {
                     name="price"
                     label="Price"
                     margin="dense"
+                    value={price}
                     fullWidth
                     type="number"
                     sx={{ marginBottom: "1rem" }}
+                    onChange={(e) => {
+                      const amount = e.target.value;
+
+                      if (!amount || amount.match(/^\d{1,}(\.\d{0,4})?$/)) {
+                        // this.setState(() => ({ amount }));
+                        setPrice(amount);
+                      }
+                    }}
                     required
                   />
                 </div>
@@ -410,7 +474,7 @@ function Product() {
                 {tableHasNoData ? (
                   <TableBody>
                     <StyledTableRow>
-                      <TableCell align="center" colSpan={5}>
+                      <TableCell align="center" colSpan={6}>
                         {"No data available"}
                       </TableCell>
                     </StyledTableRow>

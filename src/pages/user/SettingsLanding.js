@@ -270,7 +270,6 @@ export default function MiniDrawer() {
                 <Tooltip title="Settings">
                   <SettingsIcon />
                 </Tooltip>
-                4
               </ListItemIcon>
               <ListItemText sx={{ opacity: open ? 1 : 0 }}>
                 <Typography sx={{ fontWeight: "bold" }}>Settings</Typography>
