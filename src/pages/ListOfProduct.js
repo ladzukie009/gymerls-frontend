@@ -28,6 +28,7 @@ import Inventory2Icon from "@mui/icons-material/Inventory2";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Swal from "sweetalert2";
 import Product from "./Product";
+import { useEffect } from "react";
 
 const drawerWidth = 240;
 
@@ -107,6 +108,18 @@ export default function MiniDrawer() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    validateRole(role);
+  });
+
+  const validateRole = (role) => {
+    if (role !== null && role === "super_admin") {
+    } else {
+      navigate("/error");
+    }
   };
 
   const logout = () => {

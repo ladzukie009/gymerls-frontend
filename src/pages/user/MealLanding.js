@@ -216,12 +216,16 @@ export default function MiniDrawer() {
               </ListItemText>
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: "block", opacity: 0.5 }}>
+          <ListItem disablePadding sx={{ display: "block" }}>
             <ListItemButton
               sx={{
                 minHeight: 48,
                 justifyContent: open ? "initial" : "center",
                 px: 2.5,
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = "/user/order";
               }}
             >
               <ListItemIcon
@@ -231,13 +235,14 @@ export default function MiniDrawer() {
                   justifyContent: "center",
                 }}
               >
-                <Tooltip title="My Orders">
+                <Tooltip title="My Cart">
                   <ShoppingCartIcon />
                 </Tooltip>
               </ListItemIcon>
-              <ListItemText sx={{ opacity: open ? 1 : 0 }}>
-                <Typography>My Orders</Typography>
-              </ListItemText>
+              <ListItemText
+                primary={"My Cart"}
+                sx={{ opacity: open ? 1 : 0 }}
+              />
             </ListItemButton>
           </ListItem>
         </List>

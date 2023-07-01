@@ -29,6 +29,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import Swal from "sweetalert2";
 import Landing from "./Landing";
 import Profile from "./Profile";
+import { useEffect } from "react";
 
 const drawerWidth = 240;
 
@@ -108,6 +109,18 @@ export default function MiniDrawer() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    validateRole(role);
+  });
+
+  const validateRole = (role) => {
+    if (role !== null && role === "user") {
+    } else {
+      navigate("/error");
+    }
   };
 
   const logout = () => {

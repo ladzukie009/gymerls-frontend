@@ -43,7 +43,7 @@ function Cart() {
   };
 
   useEffect(() => {
-    fetch("https://gymerls-api.vercel.app/api/get-cart-by-id", {
+    fetch("http://localhost:3031/api/get-cart-by-id", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -63,7 +63,7 @@ function Cart() {
         result.map(({ sub_total }) => (t = t + sub_total));
         setGrandTotal(t);
       });
-  }, [cart]);
+  }, []);
 
   function findSumUsingReduce(result) {
     const s = result.reduce((s, { price }) => s + price, 0);
@@ -141,7 +141,7 @@ function Cart() {
   };
 
   const deleteCartItem = (id) => {
-    fetch("https://gymerls-api.vercel.app/api/delete-cart", {
+    fetch("http://localhost:3031/api/delete-cart", {
       method: "PATCH",
       headers: {
         "Content-type": "application/json",
@@ -188,7 +188,7 @@ function Cart() {
 
         const transactionDate = formatDate(new Date());
 
-        fetch("https://gymerls-api.vercel.app/api/transaction", {
+        fetch("http://localhost:3031/api/transaction", {
           method: "POST",
           headers: {
             "Content-type": "application/json",

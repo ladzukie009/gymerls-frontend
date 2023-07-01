@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import {
@@ -107,6 +107,18 @@ export default function MiniDrawer() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    validateRole(role);
+  });
+
+  const validateRole = (role) => {
+    if (role !== null && role === "super_admin") {
+    } else {
+      navigate("/error");
+    }
   };
 
   const logout = () => {
