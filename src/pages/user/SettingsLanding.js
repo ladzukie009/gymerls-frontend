@@ -25,10 +25,12 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SettingsIcon from "@mui/icons-material/Settings";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import LogoutIcon from "@mui/icons-material/Logout";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 
 import Swal from "sweetalert2";
 import Profile from "./Profile";
 import Settings from "./Settings";
+import { useEffect } from "react";
 
 const drawerWidth = 240;
 
@@ -108,6 +110,18 @@ export default function MiniDrawer() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    validateRole(role);
+  });
+
+  const validateRole = (role) => {
+    if (role !== null && role === "user") {
+    } else {
+      navigate("/error");
+    }
   };
 
   const logout = () => {
@@ -230,7 +244,7 @@ export default function MiniDrawer() {
               }}
               onClick={(e) => {
                 e.preventDefault();
-                window.location.href = "/user/order";
+                window.location.href = "/user/cart";
               }}
             >
               <ListItemIcon
@@ -248,6 +262,32 @@ export default function MiniDrawer() {
                 primary={"My Cart"}
                 sx={{ opacity: open ? 1 : 0 }}
               />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = "/user/order";
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <Tooltip title="Orders">
+                  <ShoppingBagIcon />
+                </Tooltip>
+              </ListItemIcon>
+              <ListItemText primary={"Orders"} sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>

@@ -25,10 +25,12 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SettingsIcon from "@mui/icons-material/Settings";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import LogoutIcon from "@mui/icons-material/Logout";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 
 import Swal from "sweetalert2";
+import Landing from "./Landing";
 import Profile from "./Profile";
-import Cart from "./Cart";
+import { useEffect } from "react";
 
 const drawerWidth = 240;
 
@@ -108,6 +110,18 @@ export default function MiniDrawer() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    validateRole(role);
+  });
+
+  const validateRole = (role) => {
+    if (role !== null && role === "user") {
+    } else {
+      navigate("/error");
+    }
   };
 
   const logout = () => {
@@ -230,6 +244,7 @@ export default function MiniDrawer() {
               }}
               onClick={(e) => {
                 e.preventDefault();
+                window.location.href = "/user/cart";
               }}
             >
               <ListItemIcon
@@ -243,8 +258,33 @@ export default function MiniDrawer() {
                   <ShoppingCartIcon />
                 </Tooltip>
               </ListItemIcon>
+              <ListItemText
+                primary={"My Cart"}
+                sx={{ opacity: open ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <Tooltip title="Orders">
+                  <ShoppingBagIcon />
+                </Tooltip>
+              </ListItemIcon>
               <ListItemText sx={{ opacity: open ? 1 : 0 }}>
-                <Typography sx={{ fontWeight: "bold" }}>My Cart</Typography>
+                <Typography sx={{ fontWeight: "bold" }}>Orders</Typography>
               </ListItemText>
             </ListItemButton>
           </ListItem>
@@ -307,7 +347,6 @@ export default function MiniDrawer() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <Cart />
       </Box>
     </Box>
   );

@@ -222,7 +222,7 @@ function DrawerAppBar(props) {
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        navigate("/user/order");
+        navigate("/user/cart");
       }
     });
   };

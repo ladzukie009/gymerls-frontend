@@ -29,7 +29,7 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 
 import Swal from "sweetalert2";
 import Profile from "./Profile";
-import MealPlanning from "./MealPlanning";
+import Cart from "./Cart";
 import { useEffect } from "react";
 
 const drawerWidth = 240;
@@ -213,6 +213,10 @@ export default function MiniDrawer() {
                 justifyContent: open ? "initial" : "center",
                 px: 2.5,
               }}
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = "/user/meal-plan";
+              }}
             >
               <ListItemIcon
                 sx={{
@@ -225,9 +229,10 @@ export default function MiniDrawer() {
                   <RestaurantIcon />
                 </Tooltip>
               </ListItemIcon>
-              <ListItemText sx={{ opacity: open ? 1 : 0 }}>
-                <Typography sx={{ fontWeight: "bold" }}>Meal Plan</Typography>
-              </ListItemText>
+              <ListItemText
+                primary={"Meal Plan"}
+                sx={{ opacity: open ? 1 : 0 }}
+              />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding sx={{ display: "block" }}>
@@ -236,10 +241,6 @@ export default function MiniDrawer() {
                 minHeight: 48,
                 justifyContent: open ? "initial" : "center",
                 px: 2.5,
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.href = "/user/cart";
               }}
             >
               <ListItemIcon
@@ -253,10 +254,9 @@ export default function MiniDrawer() {
                   <ShoppingCartIcon />
                 </Tooltip>
               </ListItemIcon>
-              <ListItemText
-                primary={"My Cart"}
-                sx={{ opacity: open ? 1 : 0 }}
-              />
+              <ListItemText sx={{ opacity: open ? 1 : 0 }}>
+                <Typography sx={{ fontWeight: "bold" }}>My Cart</Typography>
+              </ListItemText>
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding sx={{ display: "block" }}>
@@ -311,9 +311,10 @@ export default function MiniDrawer() {
                   <SettingsIcon />
                 </Tooltip>
               </ListItemIcon>
-              <ListItemText primary={"Settings"} sx={{ opacity: open ? 1 : 0 }}>
-                <Typography>Settings</Typography>
-              </ListItemText>
+              <ListItemText
+                primary={"Settings"}
+                sx={{ opacity: open ? 1 : 0 }}
+              />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding sx={{ display: "block" }}>
@@ -343,7 +344,7 @@ export default function MiniDrawer() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <MealPlanning />
+        <Cart />
       </Box>
     </Box>
   );
