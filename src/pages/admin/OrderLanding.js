@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import {
@@ -27,10 +27,8 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-
 import Swal from "sweetalert2";
-import User from "./User";
-import { useEffect } from "react";
+import Order from "./Order";
 
 const drawerWidth = 240;
 
@@ -211,6 +209,7 @@ export default function MiniDrawer() {
               }}
               onClick={(e) => {
                 e.preventDefault();
+                window.location.href = "/admin/list-of-user";
               }}
             >
               <ListItemIcon
@@ -225,9 +224,7 @@ export default function MiniDrawer() {
                 </Tooltip>
               </ListItemIcon>
               <ListItemText sx={{ opacity: open ? 1 : 0 }}>
-                <Typography sx={{ fontWeight: "bold" }}>
-                  List of user
-                </Typography>
+                <Typography>List of user</Typography>
               </ListItemText>
             </ListItemButton>
           </ListItem>
@@ -266,10 +263,6 @@ export default function MiniDrawer() {
                 justifyContent: open ? "initial" : "center",
                 px: 2.5,
               }}
-              onClick={(e) => {
-                e.preventDefault();
-                window.location.href = "/admin/orders";
-              }}
             >
               <ListItemIcon
                 sx={{
@@ -283,7 +276,7 @@ export default function MiniDrawer() {
                 </Tooltip>
               </ListItemIcon>
               <ListItemText sx={{ opacity: open ? 1 : 0 }}>
-                <Typography>Orders</Typography>
+                <Typography sx={{ fontWeight: "bold" }}>Orders</Typography>
               </ListItemText>
             </ListItemButton>
           </ListItem>
@@ -342,7 +335,8 @@ export default function MiniDrawer() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <User />
+        {/* <Landing /> */}
+        <Order />
       </Box>
     </Box>
   );

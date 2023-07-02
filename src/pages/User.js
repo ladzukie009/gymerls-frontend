@@ -697,7 +697,6 @@ function User() {
   };
 
   const changeUserStatus = (status, username) => {
-    console.log(status, username);
     Swal.fire({
       icon: "info",
       title: "Are you sure you want to update the status to this user?",

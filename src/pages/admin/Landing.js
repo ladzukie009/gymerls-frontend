@@ -18,6 +18,7 @@ function Landing() {
   const [currentUser, getCurrentUser] = useState("");
   const [userCount, setUserCount] = useState(0);
   const [productCount, setProductCount] = useState(0);
+  const [orderCount, setOrderCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +37,12 @@ function Landing() {
       .then((response) => response.json())
       .then((data) => {
         setUserCount(data.length);
+      });
+
+    fetch("http://localhost:3031/api/transactions")
+      .then((response) => response.json())
+      .then((data) => {
+        setOrderCount(data.length);
       });
 
     fetch("http://localhost:3031/api/get-product", {
@@ -197,7 +204,7 @@ function Landing() {
                     }}
                   >
                     <Typography variant="button">ORDERS</Typography>
-                    <Typography variant="h4">0</Typography>
+                    <Typography variant="h4">{orderCount}</Typography>
                   </Grid>
                 </Paper>
               </Grid>

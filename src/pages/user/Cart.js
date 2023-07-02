@@ -13,6 +13,7 @@ import {
   Radio,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 import Image from "mui-image";
 import { useEffect, useState } from "react";
@@ -67,7 +68,6 @@ function Cart() {
 
   function findSumUsingReduce(result) {
     const s = result.reduce((s, { price }) => s + price, 0);
-    // setTotalAmount(s);
     return s;
   }
 
@@ -83,17 +83,17 @@ function Cart() {
   }
 
   const incrementQuantity = (id) => {
-    findSumUsingReduce(cart);
+    findSumUsingReduce(cart); //function
+
     setCart((cartItems) =>
       cartItems.map((item) => {
-        // id === item.id ? { ...item, item.quantity + 1)  } : item;
         if (id === item.id) {
           item.quantity++;
           item.sub_total = item.quantity * item.price;
         }
 
-        setCart(item);
-        mappingPrice();
+        setCart(item); //useState
+        mappingPrice(); //function
         return item;
       })
     );
@@ -102,7 +102,7 @@ function Cart() {
   const mappingPrice = () => {
     let t = 0;
     cart.map(({ sub_total }) => (t = t + sub_total));
-    setGrandTotal(t);
+    setGrandTotal(t); //useState
     return t;
   };
 
@@ -151,7 +151,10 @@ function Cart() {
       }),
     })
       .then((res) => res.json())
-      .then((result) => {});
+      .then((result) => {
+        alert("Cart item deleted");
+        window.location.reload();
+      });
   };
 
   const formatDate = (date) => {
@@ -201,7 +204,8 @@ function Cart() {
             address: address,
             items: replaceItem,
             total: grandTotal,
-            status: "pending",
+            status: "Pending",
+            receipt_url: "image.jpg",
             transaction_date: transactionDate,
           }),
         })
@@ -413,7 +417,7 @@ function Cart() {
                     <Grid item xs={2} fontWeight={"bold"}>
                       Image
                     </Grid>
-                    <Grid item xs={4} fontWeight={"bold"}>
+                    <Grid item xs={3} fontWeight={"bold"}>
                       Product name
                     </Grid>
                     <Grid item xs={1} fontWeight={"bold"}>
@@ -424,6 +428,9 @@ function Cart() {
                     </Grid>
                     <Grid item xs={2} fontWeight={"bold"}>
                       Total
+                    </Grid>
+                    <Grid item xs={1} fontWeight={"bold"}>
+                      Action
                     </Grid>
                   </Grid>
                 </Stack>
@@ -449,7 +456,7 @@ function Cart() {
                             width={50}
                           />
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={3}>
                           <Typography>{item.product_name}</Typography>
                         </Grid>
                         <Grid item xs={1}>
@@ -472,6 +479,14 @@ function Cart() {
                         </Grid>
                         <Grid item xs={2}>
                           <Typography>{item.price * item.quantity}</Typography>
+                        </Grid>
+                        <Grid item xs={1}>
+                          <IconButton
+                            aria-label="cart"
+                            onClick={() => deleteCartItem(item.id)}
+                          >
+                            <DeleteForeverIcon color="error" />
+                          </IconButton>
                         </Grid>
                       </Grid>
                     );

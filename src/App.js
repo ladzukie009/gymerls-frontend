@@ -9,10 +9,12 @@ import UserDashboard from "./pages/user/UserDashboard";
 import ErrorPage from "./pages/ErrorPage";
 import ListOfUser from "./pages/ListOfUser";
 import ListOfProduct from "./pages/ListOfProduct";
+import Orders from "./pages/OrderLanding";
 
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminListOfUser from "./pages/admin/ListOfUser";
 import AdminListOfProduct from "./pages/admin/ListOfProduct";
+import AdminOrders from "./pages/admin/OrderLanding";
 
 import MealLanding from "./pages/user/MealLanding";
 import CartLanding from "./pages/user/CartLanding";
@@ -21,13 +23,6 @@ import SeetingsLanding from "./pages/user/SettingsLanding";
 import Store from "./pages/Store";
 
 function App() {
-  // const [currentUserRole, setCurrentUserRole] = useState("");
-
-  // useEffect(() => {
-  //   const userRole = localStorage.getItem("role");
-  //   setCurrentUserRole(userRole);
-  // }, []);
-
   return (
     <Router>
       <Routes>
@@ -38,11 +33,13 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/list-of-user" element={<ListOfUser />} />
         <Route path="/list-of-product" element={<ListOfProduct />} />
+        <Route path="/orders" element={<Orders />} />
 
         {/* admin routes */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/list-of-user" element={<AdminListOfUser />} />
         <Route path="/admin/list-of-product" element={<AdminListOfProduct />} />
+        <Route path="/admin/orders" element={<AdminOrders />} />
 
         {/* user routes */}
         <Route path="/user/dashboard" element={<UserDashboard />} />
