@@ -77,7 +77,7 @@ function Product() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetch("http://localhost:3031/api/transactions")
+      fetch("https://gymerls-api.vercel.app/api/transactions")
         .then((response) => response.json())
         .then((data) => {
           setTransaction(data);
@@ -142,7 +142,7 @@ function Product() {
     }).then((result) => {
       if (result.isConfirmed) {
         uploadImageToCloud(function (callback) {
-          fetch("http://localhost:3031/api/update-transaction", {
+          fetch("https://gymerls-api.vercel.app/api/update-transaction", {
             method: "PATCH",
             headers: {
               "Content-type": "application/json",
@@ -269,7 +269,7 @@ function Product() {
                 {tableHasNoData ? (
                   <TableBody>
                     <StyledTableRow>
-                      <TableCell align="center" colSpan={5}>
+                      <TableCell align="center" colSpan={8}>
                         {"No data available"}
                       </TableCell>
                     </StyledTableRow>

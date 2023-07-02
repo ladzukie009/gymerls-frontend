@@ -44,7 +44,7 @@ function Product() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetch("http://localhost:3031/api/get-transaction-by-username", {
+      fetch("https://gymerls-api.vercel.app/api/get-transaction-by-username", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -113,7 +113,7 @@ function Product() {
                 {tableHasNoData ? (
                   <TableBody>
                     <StyledTableRow>
-                      <TableCell align="center" colSpan={5}>
+                      <TableCell align="center" colSpan={7}>
                         {"No data available"}
                       </TableCell>
                     </StyledTableRow>
