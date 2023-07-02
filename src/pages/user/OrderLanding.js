@@ -28,8 +28,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 
 import Swal from "sweetalert2";
-import Landing from "./Landing";
 import Profile from "./Profile";
+import Order from "./Order";
 import { useEffect } from "react";
 
 const drawerWidth = 240;
@@ -347,6 +347,7 @@ export default function MiniDrawer() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
+        <Order />
       </Box>
     </Box>
   );

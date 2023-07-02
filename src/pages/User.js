@@ -22,6 +22,7 @@ import {
   Radio,
   CircularProgress,
   Backdrop,
+  Switch,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme, styled } from "@mui/material/styles";
@@ -121,14 +122,6 @@ function User() {
     {
       name: "monthly",
       value: "Monthly",
-    },
-    {
-      name: "student",
-      value: "Student",
-    },
-    {
-      name: "all",
-      value: "All access",
     },
   ];
 
@@ -236,6 +229,7 @@ function User() {
             name: fullname,
             username: username,
             role: selectedRole,
+            isActive: 1,
             password: (Math.random() + 1).toString(36).substring(4),
           }),
         })
@@ -700,6 +694,48 @@ function User() {
         setIsBtnLoading(false);
       }
     });
+  };
+
+  const changeUserStatus = (status, username) => {
+    console.log(status, username);
+    Swal.fire({
+      icon: "info",
+      title: "Are you sure you want to update the status to this user?",
+      text: "You won't be able to revert this!",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      allowOutsideClick: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setIsBtnLoading(true);
+        handleUserStatus(status, username);
+      }
+    });
+  };
+
+  const handleUserStatus = (status, username) => {
+    fetch("http://localhost:3031/api/update-user-status", {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        isActive: status ? 1 : 0,
+        username: username,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        Swal.fire({
+          title: "User status successfully updated!",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(function () {
+          setIsBtnLoading(false);
+        });
+      });
   };
 
   return (
@@ -2123,6 +2159,7 @@ function User() {
                     <TableCell sx={{ fontWeight: "bold" }}>ROLE</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }}>NAME</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }}>ADDED BY</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>ACTIVE</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }} align="center">
                       ACTIONS
                     </TableCell>
@@ -2143,6 +2180,17 @@ function User() {
                           <TableCell>{user.role}</TableCell>
                           <TableCell>{user.name}</TableCell>
                           <TableCell>{user.added_by}</TableCell>
+                          <TableCell>
+                            <Switch
+                              onChange={(e) => {
+                                changeUserStatus(
+                                  e.target.checked,
+                                  user.username
+                                );
+                              }}
+                              defaultChecked={user.isActive ? true : false}
+                            />
+                          </TableCell>
                           <TableCell align="center">
                             <Button
                               onClick={() =>
