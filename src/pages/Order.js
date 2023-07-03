@@ -77,7 +77,7 @@ function Product() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetch("https://gymerls-api.vercel.app/api/transactions")
+      fetch("http://localhost:3031/api/transactions")
         .then((response) => response.json())
         .then((data) => {
           setTransaction(data);
@@ -142,7 +142,7 @@ function Product() {
     }).then((result) => {
       if (result.isConfirmed) {
         uploadImageToCloud(function (callback) {
-          fetch("https://gymerls-api.vercel.app/api/update-transaction", {
+          fetch("http://localhost:3031/api/update-transaction", {
             method: "PATCH",
             headers: {
               "Content-type": "application/json",

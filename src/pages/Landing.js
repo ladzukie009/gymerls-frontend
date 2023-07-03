@@ -27,19 +27,19 @@ function Landing() {
     getTime();
     getCurrentUser(localStorage.getItem("username"));
 
-    fetch("https://gymerls-api.vercel.app/api/all-user")
+    fetch("http://localhost:3031/api/all-user")
       .then((response) => response.json())
       .then((data) => {
         setUserCount(data.length);
       });
 
-    fetch("https://gymerls-api.vercel.app/api/transactions")
+    fetch("http://localhost:3031/api/transactions")
       .then((response) => response.json())
       .then((data) => {
         setOrderCount(data.length);
       });
 
-    fetch("https://gymerls-api.vercel.app/api/products")
+    fetch("http://localhost:3031/api/products")
       .then((response) => response.json())
       .then((data) => {
         setProductCount(data.length);

@@ -17,12 +17,17 @@ import {
   DialogContentText,
   DialogActions,
   TextField,
+  Grid,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme, styled } from "@mui/material/styles";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
+import EditIcon from "@mui/icons-material/Edit";
 import Swal from "sweetalert2";
 import Axios from "axios";
+import Image from "mui-image";
 
 function Product() {
   const theme = useTheme();
@@ -51,6 +56,8 @@ function Product() {
   const [prodDescription, setProdDescription] = useState("");
   const [prodPrice, setProdPrice] = useState(0);
   const [prodId, setProdId] = useState(0);
+  const [currentImageUrl, setCurrentImageUrl] = useState("");
+  const [imageFieldVisibility, setImageFieldVisibility] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -73,7 +80,7 @@ function Product() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetch("https://gymerls-api.vercel.app/api/get-product", {
+      fetch("http://localhost:3031/api/get-product", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -155,7 +162,7 @@ function Product() {
     const data = new FormData(e.currentTarget);
     const addedDate = formatDate(new Date());
     uploadImageToCloud(function (callback) {
-      fetch("https://gymerls-api.vercel.app/api/create-product", {
+      fetch("http://localhost:3031/api/create-product", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -201,7 +208,7 @@ function Product() {
         allowOutsideClick: false,
       }).then((result) => {
         if (result.isConfirmed) {
-          fetch("https://gymerls-api.vercel.app/api/update-product", {
+          fetch("http://localhost:3031/api/update-product", {
             method: "PATCH",
             headers: {
               "Content-type": "application/json",
@@ -254,8 +261,9 @@ function Product() {
     setOpenModalUpdateProduct(true);
     setIsBtnLoading(false);
     setProdId(id);
+    setImageFieldVisibility(false);
 
-    fetch("https://gymerls-api.vercel.app/api/get-product-by-id", {
+    fetch("http://localhost:3031/api/get-product-by-id", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -267,8 +275,11 @@ function Product() {
       .then((res) => res.json())
       .then((result) => {
         setProductName(result[0].product_name);
+        setCurrentImageUrl(result[0].image_url);
         setProdDescription(result[0].description);
         setProdPrice(result[0].price);
+        // set the image url
+        setUploadFile(result[0].image_url);
       });
   };
 
@@ -310,17 +321,43 @@ function Product() {
                     }}
                     required
                   />
-                  <TextField
-                    name="image_url"
-                    margin="dense"
-                    fullWidth
-                    sx={{ marginBottom: "1rem" }}
-                    type="file"
-                    onChange={(event) => {
-                      setUploadFile(event.target.files[0]);
-                    }}
-                    required
-                  />
+                  <Grid container sx={{ marginBottom: 1 }}>
+                    <Grid item xs={6}>
+                      <Image
+                        src={currentImageUrl}
+                        alt="empty cart"
+                        height={150}
+                        width={150}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Tooltip title="Edit photo">
+                        <IconButton
+                          onClick={() => {
+                            setImageFieldVisibility(true);
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Grid>
+                  </Grid>
+
+                  {imageFieldVisibility ? (
+                    <TextField
+                      name="image_url"
+                      margin="dense"
+                      fullWidth
+                      sx={{ marginBottom: "1rem" }}
+                      type="file"
+                      onChange={(event) => {
+                        setUploadFile(event.target.files[0]);
+                      }}
+                    />
+                  ) : (
+                    ""
+                  )}
+
                   <TextField
                     name="update_description"
                     label="Description"
@@ -409,10 +446,19 @@ function Product() {
                     name="description"
                     label="Description"
                     margin="dense"
-                    value={price}
                     fullWidth
                     multiline
                     rows={2}
+                    sx={{ marginBottom: "1rem" }}
+                    required
+                  />
+                  <TextField
+                    name="price"
+                    label="Price"
+                    margin="dense"
+                    value={price}
+                    fullWidth
+                    type="number"
                     sx={{ marginBottom: "1rem" }}
                     onChange={(e) => {
                       const amount = e.target.value;
@@ -421,15 +467,6 @@ function Product() {
                         setPrice(amount);
                       }
                     }}
-                    required
-                  />
-                  <TextField
-                    name="price"
-                    label="Price"
-                    margin="dense"
-                    fullWidth
-                    type="number"
-                    sx={{ marginBottom: "1rem" }}
                     required
                   />
                 </div>

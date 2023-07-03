@@ -44,7 +44,7 @@ function Product() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetch("https://gymerls-api.vercel.app/api/get-transaction-by-username", {
+      fetch("http://localhost:3031/api/get-transaction-by-username", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
