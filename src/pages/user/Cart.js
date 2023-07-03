@@ -157,6 +157,20 @@ function Cart() {
       });
   };
 
+  const deleteCartItemAfterCheckout = (id) => {
+    fetch("http://localhost:3031/api/delete-cart", {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {});
+  };
+
   const formatDate = (date) => {
     var dateToFormat = new Date(date);
     var year = dateToFormat.toLocaleString("default", { year: "numeric" });
@@ -178,7 +192,7 @@ function Cart() {
     }).then((result) => {
       if (result.isConfirmed) {
         for (let post of cart) {
-          deleteCartItem(post.id);
+          deleteCartItemAfterCheckout(post.id);
         }
 
         for (let item of cart) {
@@ -212,12 +226,13 @@ function Cart() {
           .then((res) => res.json())
           .then((result) => {
             Swal.fire({
-              title: "Product successfully created!",
+              title: "Transaction is successful!",
               icon: "success",
               showConfirmButton: false,
               timer: 1500,
             }).then(function () {
               setOpen(false);
+              window.location.reload();
             });
           });
       }

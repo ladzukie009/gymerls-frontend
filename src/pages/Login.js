@@ -5,7 +5,6 @@ import {
   TextField,
   FormControlLabel,
   Checkbox,
-  Link,
   Paper,
   Box,
   Grid,
@@ -20,19 +19,13 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Swal from "sweetalert2";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Copyright(props) {
   return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
+    <Typography variant="body2" align="center" {...props}>
       {"Copyright © "}
-      <Link color="inherit">Gym Management System</Link>{" "}
-      {new Date().getFullYear()}
+      <Link to="/">Gym Management System</Link> {new Date().getFullYear()}
       {"."}
     </Typography>
   );
